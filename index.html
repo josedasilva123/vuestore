@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/vue.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script
+      src="https://kit.fontawesome.com/05668168e9.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>Vue Store</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div class="container">
+            <div class="flex-grid">
+                <div class="logo">
+                    <img src="/assets/Nintendo.png" alt="">
+                </div>
+                <button>
+                    <span>{{carrinho.length}}</span>
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </button>
+            </div>
+        </div>        
+      </header>
+      <img src="/assets/nintendo-banner.avif" alt="">  
+      <section class="modal" v-if="produtoAtual">
+        <div class="modal-box">
+          <button class="close" @click="resetProduto()" aria-label="close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img :src="produtoAtual.imagem" :alt="produtoAtual.nome" />
+          <div class="content">
+            <h2>{{produtoAtual.nome}}</h2>
+            <span>{{produtoAtual.preco | toBRL}}</span>
+            <p>{{produtoAtual.descricao}}</p>
+            <div class="button-grid m-top1">
+                <button class="btn" @click="adicionarCarrinho(produtoAtual)">Adicionar ao carrinho</button>
+            </div>            
+          </div>
+        </div>
+      </section>
+
+      <section class="carrinho">
+        <div class="cart-box">
+            
+        </div>
+      </section>
+
+      <section class="products">
+        <div class="container">
+          <h2 class="m-bottom3">Confira os consoles em destaque</h2>
+          <ul class="product-list">
+            <li
+              v-for="produto in produtos"
+              :key="produto.id"
+              class="product-box"
+              @click="fetchProdutoSelecionado(produto.id)"
+            >
+              <img :src="produto.imagem" :alt="produto.nome" />
+              <div class="content">
+                <span>{{produto.preco | toBRL}}</span>
+                <h2>{{produto.nome}}</h2>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>
