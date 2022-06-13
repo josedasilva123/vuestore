@@ -1,0 +1,20 @@
+[
+    {
+        "id": "nintendo-switch",
+        "nome": "Nintendo Switch - Azul Neon",
+        "preco": 2300,
+        "imagem": "/assets/nintendo-switch.webp"
+    },
+    {
+        "id": "nintendo-switch-lite",
+        "nome": "Nintendo Switch Lite - Amarelo",
+        "preco": 1400,
+        "imagem": "/assets/nintendo-switch-lite.webp"
+    },
+    {
+        "id": "nintendo-switch-oled",
+        "nome": "Nintendo Switch OLED",
+        "preco": 2700,
+        "imagem": "/assets/nintendo-switch-oled.webp"
+    }
+]
