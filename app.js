@@ -1,22 +1,35 @@
 const vm = new Vue({
     el: '#app',
+
     data: {
         carrinho: [],
         carrinhoAberto: false,
         produtoAtual: false,
         produtos: [],
+        notificacao: false,
+        total: 0,
     },
+
     filters: {
         toBRL(string){
             const format = { minimumFractionDigits: 2 , style: 'currency', currency: 'BRL' }
             return string.toLocaleString('pt-BR', format);
         }
     },
+
     watch: {
         carrinho(valor){
-            console.log(valor);
+            if(valor){
+                const newTotal = valor.reduce((a, b) => {
+                    return a + (b.preco * b.counter)
+                }, 0);
+                this.total = newTotal;
+            } else {
+                this.total = 0;
+            }
         }
     },
+
     methods: {
         async fetchProdutos() {
             const response = await fetch('./api/produtos.json')
@@ -29,6 +42,23 @@ const vm = new Vue({
             const json = await response.json();
             this.produtoAtual = json;
         },
+        
+        notificar(texto, duracao){
+            if(!this.notificao){
+                this.notificao = texto;
+                setTimeout(() => {
+                    this.notificacao = false;
+                }, duracao)
+            }
+        },
+
+        toggleCarrinho(){
+            this.carrinhoAberto = !this.carrinhoAberto;
+        },
+
+        incrementarCarrinho(produto){
+            produto.counter = produto.counter + 1;  
+        },
 
         adicionarCarrinho(produto){
             if(this.carrinho.find(p => p.id === produto.id)){
@@ -39,7 +69,7 @@ const vm = new Vue({
                 produto.counter = 1;
                 this.carrinho.push(produto);
             }            
-        },
+        },        
 
         removerCarrinho(produto){
             if(produto.counter > 1){
@@ -47,8 +77,10 @@ const vm = new Vue({
                 const newCarrinho = this.carrinho.filter(p => p.id !== produto.id);
                 this.carrinho = [...newCarrinho, produto];
             } else {
-                const newList = this.carrinho.filter(p => p.id !== produto.id);
-                this.carrinho = newList;
+                if(confirm("Tem certeza que deseja remover esse produto do carrinho?")){
+                    const newList = this.carrinho.filter(p => p.id !== produto.id);
+                    this.carrinho = newList;
+                }
             }
         },
 
@@ -56,6 +88,7 @@ const vm = new Vue({
             this.produtoAtual = false;
         }
     },
+
     created(){
         this.fetchProdutos();
     }

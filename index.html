@@ -20,14 +20,56 @@
                 <div class="logo">
                     <img src="/assets/Nintendo.png" alt="">
                 </div>
-                <button>
+                <button @click="toggleCarrinho()">
                     <span>{{carrinho.length}}</span>
                     <i class="fa-solid fa-cart-shopping"></i>
                 </button>
             </div>
         </div>        
       </header>
+
+      <section v-if="carrinhoAberto" class="carrinho">
+        <div class="overlay" @click="toggleCarrinho()"></div>
+        <div class="cart">
+          <header>
+            <h2>Carrinho: {{carrinho.length}}</h2>
+          </header>
+          
+          <main class="cart-box">
+            <div>
+              <button class="close" @click="toggleCarrinho()" aria-label="close">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <ul v-if="carrinho.length > 0">
+                <li v-for="produto in carrinho">
+                  <img :src="produto.imagem" :alt="produto.nome">
+                  <div class="content">
+                    <span>{{produto.preco | toBRL}}</span>
+                    <h3>{{produto.nome}}</h3>
+                  </div>
+                  <div class="amount">
+                    <button @click="removerCarrinho(produto)"><i class="fa-solid fa-minus"></i></button>
+                    <span>{{produto.counter}}</span>
+                    <button @click="adicionarCarrinho(produto)"><i class="fa-solid fa-plus"></i></button>
+                  </div>              
+                </li>
+              </ul>
+              <div v-else class="empty">
+                <p>Não há nenhum item no carrinho</p>
+              </div>
+            </div>         
+            
+            <div class="total">
+              {{total | toBRL}}
+            </div>
+          </main>
+        </div>
+       
+        
+      </section>
+
       <img src="/assets/nintendo-banner.avif" alt="">  
+
       <section class="modal" v-if="produtoAtual">
         <div class="modal-box">
           <button class="close" @click="resetProduto()" aria-label="close">
@@ -43,13 +85,7 @@
             </div>            
           </div>
         </div>
-      </section>
-
-      <section class="carrinho">
-        <div class="cart-box">
-            
-        </div>
-      </section>
+      </section>      
 
       <section class="products">
         <div class="container">
@@ -62,8 +98,7 @@
               @click="fetchProdutoSelecionado(produto.id)"
             >
               <img :src="produto.imagem" :alt="produto.nome" />
-              <div class="content">
-                <span>{{produto.preco | toBRL}}</span>
+              <div class="content">                
                 <h2>{{produto.nome}}</h2>
               </div>
             </li>
