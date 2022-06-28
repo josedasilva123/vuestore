@@ -12,6 +12,40 @@
     ></script>
     <title>Vue Store</title>
   </head>
+  <style>
+    .notification{
+      max-width: 300px;
+      width: 100%;
+      position: fixed;
+      right: 0;
+      top: 2rem;
+      background: #fff;
+      z-index: 1003;
+    }
+    .notification p{
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      line-height: 1.3;
+      padding: 1rem;
+    }
+    .notification p i{
+      color: #E60012;
+    }
+    .notification span{
+      display: block;
+      height: 6px;
+      background-color: #E60012;
+      animation: countdown 1.6s forwards;
+    }
+    @keyframes countdown{
+      from{
+        width: 100%;        
+      } to {
+        width: 1%;
+      }
+    }
+  </style>
   <body>
     <div id="app">
       <header>
@@ -27,6 +61,12 @@
             </div>
         </div>        
       </header>
+
+
+      <div class="notification" v-if="notificacao">
+        <p><i class="fa-solid fa-circle-exclamation"></i> {{notificacao}}</p>
+        <span></span>
+      </div>
 
       <section v-if="carrinhoAberto" class="carrinho">
         <div class="overlay" @click="toggleCarrinho()"></div>
@@ -50,7 +90,7 @@
                   <div class="amount">
                     <button @click="removerCarrinho(produto)"><i class="fa-solid fa-minus"></i></button>
                     <span>{{produto.counter}}</span>
-                    <button @click="adicionarCarrinho(produto)"><i class="fa-solid fa-plus"></i></button>
+                    <button @click="adicionarCarrinho(produto, true)"><i class="fa-solid fa-plus"></i></button>
                   </div>              
                 </li>
               </ul>
@@ -64,13 +104,11 @@
             </div>
           </main>
         </div>
-       
-        
       </section>
 
       <img src="/assets/nintendo-banner.avif" alt="">  
 
-      <section class="modal" v-if="produtoAtual">
+      <section class="modal" v-if="produtoAtual" @click="produtoOutclick">
         <div class="modal-box">
           <button class="close" @click="resetProduto()" aria-label="close">
             <i class="fa-solid fa-xmark"></i>
