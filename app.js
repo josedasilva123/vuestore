@@ -44,8 +44,8 @@ const vm = new Vue({
         },
         
         notificar(texto, duracao){
-            if(!this.notificao){
-                this.notificao = texto;
+            if(!this.notificacao){
+                this.notificacao = texto;
                 setTimeout(() => {
                     this.notificacao = false;
                 }, duracao)
@@ -56,19 +56,41 @@ const vm = new Vue({
             this.carrinhoAberto = !this.carrinhoAberto;
         },
 
-        incrementarCarrinho(produto){
-            produto.counter = produto.counter + 1;  
-        },
+        adicionarCarrinho(produto, desabilitarNotificação){
+            const findProduct = this.carrinho.find(p => p.id === produto.id);
 
-        adicionarCarrinho(produto){
-            if(this.carrinho.find(p => p.id === produto.id)){
-                produto.counter = produto.counter + 1;
-                const newCarrinho = this.carrinho.filter(p => p.id !== produto.id);
-                this.carrinho = [...newCarrinho, produto];
+            function notificacaoSucesso(target){ 
+                if(!desabilitarNotificação){
+                    setTimeout(() => {
+                        this.carrinhoAberto = true; 
+                    }, 1600)
+                    target.notificar(`${produto.nome} adicionado com sucesso!`, 1600); 
+                }     
+            }
+
+            if(findProduct){
+                const newCount = findProduct.counter + 1;
+
+                if(newCount <= produto.estoque){
+                    findProduct.counter = newCount;
+                    const newCarrinho = this.carrinho.filter(p => p.id !== produto.id);
+                    this.carrinho = [...newCarrinho, findProduct];
+
+                    notificacaoSucesso(this);
+                } else {
+                    this.notificar(`Desculpe não temos ${produto.nome} suficiente em estoque!`, 1600); 
+                }
+               
             } else {
                 produto.counter = 1;
                 this.carrinho.push(produto);
-            }            
+
+                notificacaoSucesso(this);         
+            }  
+            
+            
+            this.produtoAtual = false; 
+               
         },        
 
         removerCarrinho(produto){
@@ -80,7 +102,14 @@ const vm = new Vue({
                 if(confirm("Tem certeza que deseja remover esse produto do carrinho?")){
                     const newList = this.carrinho.filter(p => p.id !== produto.id);
                     this.carrinho = newList;
+                    this.notificar(`${produto.nome} removido com sucesso!`, 1600);   
                 }
+            }
+        },
+
+        produtoOutclick(event){
+            if(event.target === event.currentTarget){
+                this.resetProduto();
             }
         },
 
