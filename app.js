@@ -18,6 +18,11 @@ const vm = new Vue({
     },
 
     watch: {
+        produtoAtual(){
+            document.title = this.produtoAtual.nome || "VueStore"
+            const hash = this.produtoAtual.id || "";
+            history.pushState(null,null, `#${hash}`);
+        },
         carrinho(valor){
             if(valor){
                 const newTotal = valor.reduce((a, b) => {
@@ -113,10 +118,19 @@ const vm = new Vue({
 
         resetProduto(){
             this.produtoAtual = false;
+        },
+
+        router() {
+            const hash = document.location.hash.replace('#', "");
+
+            if(hash){
+                this.fetchProdutoSelecionado(hash);
+            }
         }
     },
 
     created(){
         this.fetchProdutos();
+        this.router();
     }
 })
