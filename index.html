@@ -81,16 +81,16 @@
                 <i class="fa-solid fa-xmark"></i>
               </button>
               <ul v-if="carrinho.length > 0">
-                <li v-for="produto in carrinho">
+                <li v-for="(produto, index) in carrinho">
                   <img :src="produto.imagem" :alt="produto.nome">
                   <div class="content">
                     <span>{{produto.preco | toBRL}}</span>
                     <h3>{{produto.nome}}</h3>
                   </div>
                   <div class="amount">
-                    <button @click="removerCarrinho(produto)"><i class="fa-solid fa-minus"></i></button>
+                    <button @click="removerCarrinho(produto, index)"><i class="fa-solid fa-minus"></i></button>
                     <span>{{produto.counter}}</span>
-                    <button @click="adicionarCarrinho(produto, true)"><i class="fa-solid fa-plus"></i></button>
+                    <button @click="adicionarCarrinho(produto, true, index)"><i class="fa-solid fa-plus"></i></button>
                   </div>              
                 </li>
               </ul>
